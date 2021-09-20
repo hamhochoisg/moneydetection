@@ -76,7 +76,7 @@ if choice == 'Home':
 
     #Load Model
     st.write('This is our model:')
-    model = get_saved_model(Model_Path)  
+    # model = get_saved_model(Model_Path)  
     test_image_path = "media\\test\\500000\\Sự-thật-về-cách-đoán-3-số-Seri-tiền-500k-200k-100k-50k-20k-10k.jpg"
     
     #Show Image
@@ -113,32 +113,57 @@ elif choice == 'Up Load & Predict':
         predict_image_array(img_array)
 
 elif choice == 'Capture From Webcam':
-    st.title("Webcam Live Feed!")
-    st.warning("Work on local computer ONLY")
-    run = st.checkbox('Show!')
-    capture = st.checkbox('Capture!')
-    FRAME_WINDOW = st.image([])
-    camera = cv2.VideoCapture(0)
-    while run:
-        _, frame = camera.read()
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        FRAME_WINDOW.image(frame)
-        
-        if capture == True:           
-            captured_image = frame 
-            break
-            st.write("Stop!")   
-    else:
-        st.write("Stop!")
+    cap = cv2.VideoCapture(0)  # device 0
+    run = st.checkbox('Show Webcam')
+    capture_button = st.checkbox('Campture')
+    quit_button = st.checkbox('Quit')
+    # Check if the webcam is opened correctly
+    if not cap.isOpened():
+        raise IOError("Cannot open webcam")
+
     
-    camera.release()
+    FRAME_WINDOW = st.image([])
+
+    # Keep reading images from webcam until press 'q'
+    while run:
+        ret, frame = cap.read()        
+        
+        # Display Webcam
+        # cv2.imshow('My App!', frame)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB ) #Convert màu cho đúng
+
+        FRAME_WINDOW.image(frame)
+
+        key = cv2.waitKey(1) & 0xFF
+        if capture_button:      # press "c" => capture
+            # save the current frame and predict
+            print('Frame shape',frame.shape)
+            captured_image = frame
+            # captured_image = cv2.cvtColor(captured_image, cv2.COLOR_BGR2RGB )     #Đã convert ở trên rồi     
+            
+            st.image(captured_image)
+            st.write('Model is predicting  it:')
+            captured_image = cv2.resize(captured_image, (224,224))
+            img_array  = np.expand_dims(captured_image, axis=0)
+            predict_image_array(img_array)
+
+            run = False
+            capture_button = False
+            
+        if quit_button:    # press "q" => quit
+            run = False
+            capture_button = False
+            quit_button = False
+            # break
+
+    cap.release()
     cv2.destroyAllWindows()
 
-    if captured_image.shape != None:
-        captured_image = cv2.cvtColor(captured_image, cv2.COLOR_BGR2RGB )  
-        st.write('Image That Captured')
-        st.image(captured_image)
-        captured_image = cv2.resize(captured_image, (224,224))
+    # if captured_image.shape != None:
+    #     captured_image = cv2.cvtColor(captured_image, cv2.COLOR_BGR2RGB )  
+    #     st.write('Image That Captured')
+    #     st.image(captured_image)
+    #     captured_image = cv2.resize(captured_image, (224,224))
 
     # if captured_image.shape != None:
     #     st.write('Image That Captured')
