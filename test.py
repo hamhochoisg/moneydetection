@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image 
 
-Model_Path = 'streamlit-demo\model\my_model_checkpoint.h5'
+Model_Path = '\model\my_model_checkpoint.h5'
 
 test_image_path = "streamlit-demo\media\\test\\100000\\252.jpg"
 img        = image.load_img(test_image_path, target_size=(224, 224))

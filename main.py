@@ -134,9 +134,10 @@ elif choice == 'Capture From Webcam':
 
         FRAME_WINDOW.image(frame)
 
-        key = cv2.waitKey(1) & 0xFF
         if capture_button:      # press "c" => capture
             # save the current frame and predict
+            cap.release() # Thử release ra liền để lấy cái hình hiện tại
+            cv2.destroyAllWindows()
             print('Frame shape',frame.shape)
             captured_image = frame
             # captured_image = cv2.cvtColor(captured_image, cv2.COLOR_BGR2RGB )     #Đã convert ở trên rồi     
@@ -149,7 +150,7 @@ elif choice == 'Capture From Webcam':
 
             run = False
             capture_button = False
-            
+
         if quit_button:    # press "q" => quit
             run = False
             capture_button = False
